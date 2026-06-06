@@ -1,7 +1,7 @@
 import {Hono} from 'hono';
 import catchAll from './src/middlewares/catchAll';
 import { HTTPException } from 'hono/http-exception';
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
 
 const userSchema = z.object({
     name: z.string(),
@@ -28,7 +28,7 @@ app.post('/', async (c, next) => {
     const body = await c.req.json();
     const parsed = userSchema.parse(body)
 
-    const {name, age, gender} = body;
+    const {name, age, gender} = parsed;
 
     if (!name || !age || !gender) return c.json({ msg: 'Missing fields' }, 400)
 
@@ -41,6 +41,9 @@ app.notFound(catchAll);
 app.onError((err, c) => {
     if (err instanceof HTTPException) {
         return c.json({ msg: err.message }, err.status)
+    }
+        if (err instanceof ZodError) {
+        return c.json({ msg: err.issues }, 400)
     }
     return c.json({ msg: 'Internal server error' }, 500)
 })
