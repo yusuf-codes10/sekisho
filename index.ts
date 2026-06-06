@@ -24,6 +24,10 @@ app.get('/users', (c) => c.json(users));
 
 app.post('/', async (c) => {
     const {name, age, gender} = await c.req.json();
+
+    const newUser: User = {name: name, age: age, gender: gender}
+    users.push(newUser);
+    return c.json(users);
 })
 
 app.use(customLogger);
