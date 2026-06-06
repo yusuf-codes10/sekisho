@@ -2,6 +2,7 @@ import {Hono} from 'hono';
 import {logger} from 'hono/logger';
 import customLogger from './src/middlewares/customLogger';
 import catchAll from './src/middlewares/catchAll';
+import { HTTPException } from 'hono/http-exception'
 
 type User = {
     name: string,
@@ -25,7 +26,7 @@ app.get('/users', (c) => c.json(users));
 app.post('/', async (c, next) => {
     const {name, age, gender} = await c.req.json();
 
-    if (!name || !age || !gender) throw new Error('You have to enter the fields!');
+    if (!name || !age || !gender) return c.json({ msg: 'Missing fields' }, 400)
 
     const newUser: User = {name: name, age: age, gender: gender}
     users.push(newUser);
@@ -34,6 +35,12 @@ app.post('/', async (c, next) => {
 
 app.use(customLogger);
 app.notFound(catchAll);
+app.onError((err, c) => {
+    if (err instanceof HTTPException) {
+        return c.json({ msg: err.message }, err.status)
+    }
+    return c.json({ msg: 'Internal server error' }, 500)
+})
 
 export default {
   port: 5200,
