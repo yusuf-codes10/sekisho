@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 const userSchema = z.object({
     name: z.string(),
-    aga: z.number(),
+    age: z.number(),
     gender: z.string().optional()
 })
 
@@ -25,7 +25,10 @@ app.get('/users', (c) => c.json(users));
 
 
 app.post('/', async (c, next) => {
-    const {name, age, gender} = await c.req.json();
+    const body = await c.req.json();
+    const parsed = userSchema.parse(body)
+
+    const {name, age, gender} = body;
 
     if (!name || !age || !gender) return c.json({ msg: 'Missing fields' }, 400)
 
