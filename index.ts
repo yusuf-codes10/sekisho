@@ -1,6 +1,7 @@
 import {Hono} from 'hono';
 import {logger} from 'hono/logger';
 import customLogger from './src/middlewares/customLogger';
+import catchAll from './src/middlewares/catchAll';
 
 type User = {
     name: string,
@@ -17,6 +18,7 @@ const users : User[] = [
 const app = new Hono();
 
 app.use(customLogger);
+app.notFound(catchAll);
 
 app.get('/', (c) => c.text('Hono is running'));
 
