@@ -1,6 +1,4 @@
 import {Hono} from 'hono';
-import {logger} from 'hono/logger';
-import customLogger from './src/middlewares/customLogger';
 import catchAll from './src/middlewares/catchAll';
 import { HTTPException } from 'hono/http-exception'
 
@@ -33,7 +31,6 @@ app.post('/', async (c, next) => {
     return c.json(users);
 })
 
-app.use(customLogger);
 app.notFound(catchAll);
 app.onError((err, c) => {
     if (err instanceof HTTPException) {
