@@ -22,8 +22,10 @@ app.get('/', (c) => c.text('Hono is running'));
 app.get('/users', (c) => c.json(users));
 
 
-app.post('/', async (c) => {
+app.post('/', async (c, next) => {
     const {name, age, gender} = await c.req.json();
+
+    if (!name || !age || !gender) throw new Error('You have to enter the fields!');
 
     const newUser: User = {name: name, age: age, gender: gender}
     users.push(newUser);
