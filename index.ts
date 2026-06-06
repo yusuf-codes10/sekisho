@@ -1,7 +1,7 @@
 import {Hono} from 'hono';
 import catchAll from './src/middlewares/catchAll';
-import { HTTPException } from 'hono/http-exception';
-import { z, ZodError } from 'zod';
+import errorHandler from './src/utils/errorHandler';
+import { z } from 'zod';
 
 const userSchema = z.object({
     name: z.string(),
@@ -38,15 +38,7 @@ app.post('/', async (c, next) => {
 })
 
 app.notFound(catchAll);
-app.onError((err, c) => {
-    if (err instanceof HTTPException) {
-        return c.json({ msg: err.message }, err.status)
-    }
-        if (err instanceof ZodError) {
-        return c.json({ msg: err.issues }, 400)
-    }
-    return c.json({ msg: 'Internal server error' }, 500)
-})
+app.onError(errorHandler);
 
 export default {
   port: 5200,
