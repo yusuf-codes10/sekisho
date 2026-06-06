@@ -8,7 +8,7 @@ const errorHandler = (err: Error, c: Context) => {
         return c.json({ msg: err.message }, err.status)
     }
         if (err instanceof ZodError) {
-        return c.json({ msg: err.issues }, 400)
+        return c.json({ msg: err.issues.map(i => i.message) }, 400)
     }
     return c.json({ msg: 'Internal server error' }, 500)
 }
