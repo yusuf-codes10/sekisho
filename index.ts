@@ -17,12 +17,17 @@ const users : User[] = [
 
 const app = new Hono();
 
-app.use(customLogger);
-app.notFound(catchAll);
-
 app.get('/', (c) => c.text('Hono is running'));
 
 app.get('/users', (c) => c.json(users));
+
+
+app.post('/', async (c) => {
+    const {name, age, gender} = await c.req.json();
+})
+
+app.use(customLogger);
+app.notFound(catchAll);
 
 export default {
   port: 5200,
