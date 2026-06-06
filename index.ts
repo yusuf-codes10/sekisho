@@ -1,12 +1,15 @@
 import {Hono} from 'hono';
 import catchAll from './src/middlewares/catchAll';
-import { HTTPException } from 'hono/http-exception'
+import { HTTPException } from 'hono/http-exception';
+import { z } from 'zod';
 
-type User = {
-    name: string,
-    age: number,
-    gender?: string
-}
+const userSchema = z.object({
+    name: z.string(),
+    aga: z.number(),
+    gender: z.string().optional()
+})
+
+type User = z.infer<typeof userSchema>
 
 const users : User[] = [
     {name: 'Ella', age: 22, gender: 'F'},
