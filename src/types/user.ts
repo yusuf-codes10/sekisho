@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 
-const userSchema = z.object({
+export const userSchema = z.object({
     name: z.string(),
     age: z.number(),
     gender: z.string().optional()

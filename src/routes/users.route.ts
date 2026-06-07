@@ -1,6 +1,15 @@
+import type {Context, Next} from 'hono';
+import type {User} from '../types/user';
+import {userSchema} from '../types/user';
+
+const users : User[] = [
+    {name: 'Ella', age: 22, gender: 'F'},
+    {name: 'Veronica', age: 23, gender: 'F'},
+    {name: 'Jake', age: 25, gender: 'M'}
+]
 
 
-const createUser = async (c, next) => {
+export const createUser = async (c: Context, next: Next) => {
     const body = await c.req.json();
     const parsed = userSchema.parse(body)
 
