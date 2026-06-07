@@ -38,7 +38,8 @@ app.post('/', async (c, next) => {
     return c.json(users);
 })
 
-app.use('/posts', postsRouter);
+// handlers are not middlewares in hono
+app.route('/posts', postsRouter);
 
 app.notFound(catchAll);
 app.onError(errorHandler);
