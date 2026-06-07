@@ -1,6 +1,7 @@
 import {Hono} from 'hono';
 import catchAll from './src/middlewares/catchAll';
 import errorHandler from './src/utils/errorHandler';
+import postsRouter from './src/routes/users.route';
 import { z } from 'zod';
 
 const userSchema = z.object({
@@ -36,6 +37,8 @@ app.post('/', async (c, next) => {
     users.push(newUser);
     return c.json(users);
 })
+
+app.use('/posts', postsRouter);
 
 app.notFound(catchAll);
 app.onError(errorHandler);
