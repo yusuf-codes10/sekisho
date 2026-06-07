@@ -1,19 +1,18 @@
 // custm logger middleware
-import type {Context, Next} from 'hono';
-import colors from 'colors';
+import type { Context, Next } from "hono";
+import chalk from "chalk";
 
 const customLogger = async (c: Context, next: Next) => {
-      const methodColors:  Record<string, string> = {
-    GET: "green",
-    POST: "blue",
-    PUT: "yellow",
-    DELETE: "red",
+  const methodColors: Record<string, Function> = {
+    GET: chalk.green,
+    POST: chalk.blue,
+    PUT: chalk.yellow,
+    DELETE: chalk.red,
   };
 
-
-    const color = (methodColors[c.req.method] || 'white') as keyof typeof colors;
-console.log(colors[color](`${c.req.method} ${c.req.url}`));
-    await next();
-}
+  const colorFn = methodColors[c.req.method] || chalk.white;
+  console.log(colorFn(`${c.req.method} ${c.req.url}`));
+  await next();
+};
 
 export default customLogger;
