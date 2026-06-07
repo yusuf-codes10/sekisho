@@ -1,7 +1,8 @@
 import {Hono} from 'hono';
 import catchAll from './src/middlewares/catchAll';
 import errorHandler from './src/utils/errorHandler';
-import postsRouter from './src/routes/users.route';
+import customLogger from './src/middlewares/customLogger';
+import postsRouter from './src/routes/posts.route';
 import { z } from 'zod';
 
 const userSchema = z.object({
@@ -19,6 +20,8 @@ const users : User[] = [
 ]
 
 const app = new Hono();
+
+app.use(customLogger);
 
 app.get('/', (c) => c.text('Hono is running'));
 
