@@ -1,6 +1,9 @@
+import {Hono} from 'hono';
 import type {Context, Next} from 'hono';
 import type {User} from '../types/user';
 import {userSchema} from '../types/user';
+
+const route = new Hono();
 
 const users : User[] = [
     {name: 'Ella', age: 22, gender: 'F'},
@@ -9,7 +12,7 @@ const users : User[] = [
 ]
 
 
-export const createUser = async (c: Context, next: Next) => {
+route.post('/', async (c: Context, next: Next) => {
     const body = await c.req.json();
     const parsed = userSchema.parse(body)
 
@@ -20,4 +23,8 @@ export const createUser = async (c: Context, next: Next) => {
     const newUser: User = {name: name, age: age, gender: gender}
     users.push(newUser);
     return c.json(users);
-}
+});
+
+route.get('/', (c: Context) => c.json(users));
+
+export default route;
