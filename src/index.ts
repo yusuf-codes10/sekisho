@@ -1,8 +1,8 @@
 import {Hono} from 'hono';
-import catchAll from './src/middlewares/catchAll';
-import errorHandler from './src/utils/errorHandler';
-import customLogger from './src/middlewares/customLogger';
-import postsRouter from './src/routes/posts.route';
+import catchAll from './middlewares/catchAll';
+import errorHandler from './utils/errorHandler';
+import customLogger from './middlewares/customLogger';
+import postsRouter from './routes/posts.route';
 import { z } from 'zod';
 
 const userSchema = z.object({
@@ -28,18 +28,7 @@ app.get('/', (c) => c.text('Hono is running'));
 app.get('/users', (c) => c.json(users));
 
 
-app.post('/', async (c, next) => {
-    const body = await c.req.json();
-    const parsed = userSchema.parse(body)
-
-    const {name, age, gender} = parsed;
-
-    if (!name || !age || !gender) return c.json({ msg: 'Missing fields' }, 400)
-
-    const newUser: User = {name: name, age: age, gender: gender}
-    users.push(newUser);
-    return c.json(users);
-})
+app.post('/', )
 
 // handlers are not middlewares in hono
 app.route('/posts', postsRouter);
