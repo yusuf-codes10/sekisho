@@ -2,6 +2,7 @@ import {Hono} from 'hono';
 import type {Context, Next} from 'hono';
 import type {User} from '../types/user';
 import {userSchema} from '../types/user';
+import { zValidator } from '@hono/zod-validator';
 
 const route = new Hono();
 
@@ -12,11 +13,10 @@ const users : User[] = [
 ]
 
 
-route.post('/', async (c: Context, next: Next) => {
+route.post('/', zValidator('json', userSchema), async (c: Context, next: Next) => {
     const body = await c.req.json();
-    const parsed = userSchema.parse(body)
 
-    const {name, age, gender} = parsed;
+    const {name, age, gender} = body;
 
     if (!name || !age || !gender) return c.json({ msg: 'Missing fields' }, 400)
 
