@@ -5,11 +5,15 @@ import type {Post} from '../types/posts';
 const router = new Hono();
 
 const posts: Post[] = [
-    {id: 1, title: 'Weather API', content: 'nothing to mention'}
+    {id: 1, title: 'Weather API', content: 'nothing to mention'},
+    {id: 2, title: 'Blog Article', content: 'Simple Blog Web app'},
+    {id: 3, title: 'World Cup Analysis', content: '2026 WC'},
+    {id: 4, title: 'Reality of Software Engineer', content: 'Tutorial hell, no first job'},
+    {id: 5, title: 'Something Went Wrong'}
 ]
 
 router.get('/', (c: Context) => {
-    return c.json({msg: 'Hello!'});
+    return c.json(posts);
 })
 
 router.get('/:id', (c: Context) => {
