@@ -49,4 +49,12 @@ route.delete('/:id', (c: Context) => {
     return c.json({msg: 'user has beed deleted!', users});
 })
 
+route.patch('/:id', async (c: Context) => {
+    const id = Number(c.req.param('id'));
+    const {name, age, gender} = await c.req.json();
+    const foudUser = users.find(user => user.id === id);
+
+
+})
+
 export default route;
