@@ -27,4 +27,10 @@ route.post('/', zValidator('json', userSchema), async (c: Context, next: Next) =
 
 route.get('/', (c: Context) => c.json(users));
 
+route.get('/:id', (c: Context) => {
+    const id = Number(c.req.param('id'));
+
+    const foundUser = users.find(user => user.id === id);
+})
+
 export default route;

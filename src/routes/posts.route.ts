@@ -51,12 +51,6 @@ router.delete('/:id', (c: Context) => {
 
     posts.splice(index, 1);
 
-    // const foundPost = posts.find(p => p.id === id);
-
-    // if (!foundPost) throw new HTTPException(404, {message: 'Post does not exist!'});
-
-    // posts = posts.filter(p => p.id !== id);
-
     return c.json({msg: 'it has been deleted!', posts});
 
 
