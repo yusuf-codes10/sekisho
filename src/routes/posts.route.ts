@@ -13,13 +13,13 @@ router.get('/', (c: Context) => {
 })
 
 router.get('/:id', (c: Context) => {
-    const id = Number(c.req.param());
+    const id = Number(c.req.param('id'));
 
     const foundPost = posts.find(p => p.id === id);
 
     if (!foundPost) return c.json({msg: 'post does not exist'});
 
-    c.json(foundPost);
+    return c.json(foundPost);
 })
 
 export default router;
