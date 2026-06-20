@@ -1,6 +1,7 @@
 import {Hono} from 'hono';
 import type {Context} from 'hono';
 import type {Post} from '../types/posts';
+import { HTTPException } from 'hono/http-exception';
 
 const router = new Hono();
 
@@ -29,7 +30,7 @@ router.get('/:id', (c: Context) => {
 router.post('/', async (c: Context) => {
     const {title, content} = await c.req.json();
 
-    if (!content || !title) return c.json({msg: 'Missin fields!'}, 404);
+    if (!content || !title) throw new HTTPException(400, {message: 'Missing Fields'});
 
     const newPost = {id: posts.length + 1, title: title, content: content};
 
