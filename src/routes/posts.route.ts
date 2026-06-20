@@ -7,7 +7,7 @@ import { postSchema } from '../types/posts';
 
 const router = new Hono();
 
-const posts: Post[] = [
+let posts: Post[] = [
     {id: 1, title: 'Weather API', content: 'nothing to mention'},
     {id: 2, title: 'Blog Article', content: 'Simple Blog Web app'},
     {id: 3, title: 'World Cup Analysis', content: '2026 WC'},
@@ -39,6 +39,21 @@ router.post('/', zValidator('json', postSchema), async (c: Context) => {
     posts.push(newPost);
 
     return c.json(posts, 201);
+})
+
+router.delete('/:id', (c: Context) => {
+    // grab the id
+    const id = Number(c.req.param('id'));
+
+    const foundPost = posts.find(p => p.id === id);
+
+    if (!foundPost) throw new HTTPException(404, {message: 'Post does not exist!'});
+
+    posts = posts.filter(p => p.id !== id);
+
+    return c.json({msg: 'it has been deleted!', posts});
+
+
 })
 
 export default router;
