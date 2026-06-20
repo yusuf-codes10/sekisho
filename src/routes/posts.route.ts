@@ -7,7 +7,7 @@ import { postSchema } from '../types/posts';
 
 const router = new Hono();
 
-let posts: Post[] = [
+const posts: Post[] = [
     {id: 1, title: 'Weather API', content: 'nothing to mention'},
     {id: 2, title: 'Blog Article', content: 'Simple Blog Web app'},
     {id: 3, title: 'World Cup Analysis', content: '2026 WC'},
@@ -45,11 +45,17 @@ router.delete('/:id', (c: Context) => {
     // grab the id
     const id = Number(c.req.param('id'));
 
-    const foundPost = posts.find(p => p.id === id);
+    const index = posts.findIndex(i => i.id ===id)
 
-    if (!foundPost) throw new HTTPException(404, {message: 'Post does not exist!'});
+    if (!index) throw new HTTPException(404, {message: 'Post does not exist!'});
 
-    posts = posts.filter(p => p.id !== id);
+    posts.splice(index, 1);
+
+    // const foundPost = posts.find(p => p.id === id);
+
+    // if (!foundPost) throw new HTTPException(404, {message: 'Post does not exist!'});
+
+    // posts = posts.filter(p => p.id !== id);
 
     return c.json({msg: 'it has been deleted!', posts});
 
