@@ -29,13 +29,13 @@ router.get('/:id', (c: Context) => {
 router.post('/', async (c: Context) => {
     const {title, content} = await c.req.json();
 
-    if (!content || !title) return c.json({msg: 'Missin fields!'});
+    if (!content || !title) return c.json({msg: 'Missin fields!'}, 404);
 
     const newPost = {id: posts.length + 1, title: title, content: content};
 
     posts.push(newPost);
 
-    return c.json(posts);
+    return c.json(posts, 201);
 })
 
 export default router;
