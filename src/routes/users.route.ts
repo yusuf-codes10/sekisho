@@ -3,13 +3,14 @@ import type {Context, Next} from 'hono';
 import type {User} from '../types/user';
 import {userSchema} from '../types/user';
 import { zValidator } from '@hono/zod-validator';
+import { HTTPException } from 'hono/http-exception';
 
 const route = new Hono();
 
 const users : User[] = [
-    {name: 'Ella', age: 22, gender: 'F'},
-    {name: 'Veronica', age: 23, gender: 'F'},
-    {name: 'Jake', age: 25, gender: 'M'}
+    {id: 1, name: 'Ella', age: 22, gender: 'F'},
+    {id: 2, name: 'Veronica', age: 23, gender: 'F'},
+    {id: 3, name: 'Jake', age: 25, gender: 'M'}
 ]
 
 
@@ -20,7 +21,7 @@ route.post('/', zValidator('json', userSchema), async (c: Context, next: Next) =
 
     if (!name || !age || !gender) return c.json({ msg: 'Missing fields' }, 400)
 
-    const newUser: User = {name: name, age: age, gender: gender}
+    const newUser: User = {id: users.length + 1, name: name, age: age, gender: gender}
     users.push(newUser);
     return c.json(users);
 });
@@ -31,6 +32,10 @@ route.get('/:id', (c: Context) => {
     const id = Number(c.req.param('id'));
 
     const foundUser = users.find(user => user.id === id);
+
+    if(!foundUser) throw new HTTPException(404, {message: 'User does not exist!'});
+
+    return c.json(foundUser, 200);
 })
 
 export default route;
