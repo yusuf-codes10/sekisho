@@ -29,6 +29,8 @@ router.get('/:id', (c: Context) => {
 router.post('/', async (c: Context) => {
     const {title, content} = await c.req.json();
 
+    if (!content || !title) return c.json({msg: 'Missin fields!'});
+
     const newPost = {id: posts.length + 1, title: title, content: content};
 
     posts.push(newPost);
