@@ -27,7 +27,7 @@ router.get('/:id', (c: Context) => {
 })
 
 router.post('/', async (c: Context) => {
-    const {title, content} = await c.req.parseBody();
+    const {title, content} = await c.req.json();
 
     const newPost = {id: posts.length + 1, title: title, content: content};
 
