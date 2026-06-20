@@ -38,4 +38,15 @@ route.get('/:id', (c: Context) => {
     return c.json(foundUser, 200);
 })
 
+route.delete('/:id', (c: Context) => {
+    const id = Number(c.req.param('id'));
+
+    const foundUser = users.find(user => user.id === id);
+    if (!foundUser) throw new HTTPException(404, {message: 'User does not exist!'});
+
+    const index = users.findIndex(user => user.id === id);
+
+    if (index === -1) throw new HTTPException(404, {message: 'User Does not exist!'});
+})
+
 export default route;
