@@ -2,6 +2,8 @@ import {Hono} from 'hono';
 import type {Context} from 'hono';
 import type {Post} from '../types/posts';
 import { HTTPException } from 'hono/http-exception';
+import { zValidator } from '@hono/zod-validator';
+import { postSchema } from '../types/posts';
 
 const router = new Hono();
 
@@ -27,7 +29,7 @@ router.get('/:id', (c: Context) => {
     return c.json(foundPost);
 })
 
-router.post('/', async (c: Context) => {
+router.post('/', zValidator('json', postSchema), async (c: Context) => {
     const {title, content} = await c.req.json();
 
     if (!content || !title) throw new HTTPException(400, {message: 'Missing Fields'});
