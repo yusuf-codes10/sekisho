@@ -64,12 +64,13 @@ route.get("/", (c: Context) =>{
 
   // pagination
   if(pageQuery !== undefined || limitQuery !== undefined) {
+    let usersCopy = [...users];
     const page = Number(pageQuery);
     const limit = Number(limitQuery);
     const skip = (page - 1) * limit;
 
-    users.splice(skip, limit);
-    return c.json(users);
+    usersCopy.splice(skip, limit);
+    return c.json(usersCopy);
   }
 
   return c.json(users);
