@@ -58,8 +58,6 @@ route.get("/", (c: Context) =>{
     if (gender !== undefined) {
       filteredUsers = filteredUsers.filter(user => user.gender === gender);
     }
-
-    return c.json(filteredUsers);
   };
 
   // pagination
@@ -68,10 +66,10 @@ route.get("/", (c: Context) =>{
     const limit = Number(limitQuery);
     const skip = (page - 1) * limit;
 
-    return c.json(filteredUsers.slice(skip, limit + skip));
+    return c.json(filteredUsers.slice(skip, skip + limit));
   }
 
-  return c.json(users);
+  return c.json(filteredUsers);
 });
 
 route.post(
