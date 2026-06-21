@@ -8,10 +8,21 @@ import { HTTPException } from "hono/http-exception";
 const route = new Hono();
 
 const users: User[] = [
-  { id: 1, name: "Ella", age: 22, gender: "F" },
+  { id: 1, name: "Ella", age: 23, gender: "F" },
   { id: 2, name: "Veronica", age: 23, gender: "F" },
   { id: 3, name: "Jake", age: 25, gender: "M" },
+  { id: 4, name: "Monica", age: 32, gender: "F" },
+  { id: 5, name: "Alice", age: 27, gender: "F" },
 ];
+
+route.get("/", (c: Context) =>{
+  const query = c.req.query('age');
+
+  return c.json(users)
+
+
+
+});
 
 route.post(
   "/",
@@ -33,8 +44,6 @@ route.post(
     return c.json(users);
   },
 );
-
-route.get("/", (c: Context) => c.json(users));
 
 route.get("/:id", (c: Context) => {
   const id = Number(c.req.param("id"));
