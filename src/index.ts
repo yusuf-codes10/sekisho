@@ -10,8 +10,6 @@ const app = new Hono();
 
 app.use(customLogger);
 
-app.get('/', (c) => c.text('Hono is running'));
-
 app.route('/auth', authRouter);
 app.route('/users', usersRouter);
 // handlers are not middlewares in hono
