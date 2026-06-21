@@ -18,10 +18,9 @@ const users: User[] = [
 route.get("/", (c: Context) =>{
   const query = c.req.query('age');
 
+  if (query !== undefined) console.log(query);
+
   return c.json(users)
-
-
-
 });
 
 route.post(
