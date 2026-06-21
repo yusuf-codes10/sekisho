@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { createFactory } from "hono/factory";
 import type { User } from "../types/user";
+import { HTTPException } from "hono/http-exception";
 
 const factory = createFactory<{ Variables: { user: User } }>();
 
@@ -64,3 +65,58 @@ export const getUsers = factory.createHandlers((c) => {
   // pagination: ALWAYS PAGINATE
   return c.json(filteredUsers.slice(skip, skip + limit));
 });
+
+export const getUserById = factory.createHandlers((c) => {
+  const id = Number(c.req.param("id"));
+
+  const foundUser = users.find((user) => user.id === id);
+
+  if (!foundUser)
+    throw new HTTPException(404, { message: "User does not exist!" });
+
+  return c.json(foundUser, 200);
+});
+
+export const createUser = factory.createHandlers(async (c) => {
+  const body = await c.req.json();
+
+  const { name, age, gender } = body;
+
+  if (!name || !age || !gender) return c.json({ msg: "Missing fields" }, 400);
+
+  const newUser: User = {
+    id: users.length + 1,
+    name: name,
+    age: age,
+    gender: gender,
+  };
+  users.push(newUser);
+  return c.json(users);
+});
+
+export const deleteUser = factory.createHandlers((c) => {
+  const id = Number(c.req.param("id"));
+
+  const index = users.findIndex((user) => user.id === id);
+  if (index === -1)
+    throw new HTTPException(404, { message: "User Does not exist!" });
+
+  users.splice(index, 1);
+
+  return c.json({ msg: "user has beed deleted!", users });
+})
+
+export const updateUser = factory.createHandlers(async (c) => {
+  const id = Number(c.req.param("id"));
+  const { name, age, gender } = await c.req.json();
+  const foundUser = users.find((user) => user.id === id);
+
+  if (!foundUser)
+    throw new HTTPException(404, { message: "User Does not exist!" });
+
+  if (foundUser.name !== undefined) foundUser.name = name;
+  if (foundUser.age !== undefined) foundUser.age = age;
+  if (foundUser.gender !== undefined) foundUser.gender = gender;
+
+  return c.json(users);
+})

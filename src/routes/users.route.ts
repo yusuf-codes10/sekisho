@@ -4,7 +4,7 @@ import type { User } from "../types/user";
 import { userSchema } from "../types/user";
 import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "hono/http-exception";
-import { getUsers } from "../controllers/users.controller";
+import { getUsers, getUserById, createUser, deleteUser, updateUser } from "../controllers/users.controller";
 
 const route = new Hono();
 
@@ -48,60 +48,13 @@ route.get("/", ...getUsers);
 route.post(
   "/",
   zValidator("json", userSchema),
-  async (c: Context, next: Next) => {
-    const body = await c.req.json();
-
-    const { name, age, gender } = body;
-
-    if (!name || !age || !gender) return c.json({ msg: "Missing fields" }, 400);
-
-    const newUser: User = {
-      id: users.length + 1,
-      name: name,
-      age: age,
-      gender: gender,
-    };
-    users.push(newUser);
-    return c.json(users);
-  },
+  ...createUser
 );
 
-route.get("/:id", (c: Context) => {
-  const id = Number(c.req.param("id"));
+route.get("/:id", ...getUserById);
 
-  const foundUser = users.find((user) => user.id === id);
+route.delete("/:id", ...deleteUser);
 
-  if (!foundUser)
-    throw new HTTPException(404, { message: "User does not exist!" });
-
-  return c.json(foundUser, 200);
-});
-
-route.delete("/:id", (c: Context) => {
-  const id = Number(c.req.param("id"));
-
-  const index = users.findIndex((user) => user.id === id);
-  if (index === -1)
-    throw new HTTPException(404, { message: "User Does not exist!" });
-
-  users.splice(index, 1);
-
-  return c.json({ msg: "user has beed deleted!", users });
-});
-
-route.patch("/:id", async (c: Context) => {
-  const id = Number(c.req.param("id"));
-  const { name, age, gender } = await c.req.json();
-  const foundUser = users.find((user) => user.id === id);
-
-  if (!foundUser)
-    throw new HTTPException(404, { message: "User Does not exist!" });
-
-  if (foundUser.name !== undefined) foundUser.name = name;
-  if (foundUser.age !== undefined) foundUser.age = age;
-  if (foundUser.gender !== undefined) foundUser.gender = gender;
-
-  return c.json(users);
-});
+route.patch("/:id", ...updateUser);
 
 export default route;
