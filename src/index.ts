@@ -4,6 +4,7 @@ import errorHandler from './utils/errorHandler';
 import customLogger from './middlewares/customLogger';
 import postsRouter from './routes/posts.route';
 import usersRouter from './routes/users.route';
+import authRouter from './routes/auth.route';
 
 const app = new Hono();
 
@@ -11,6 +12,7 @@ app.use(customLogger);
 
 app.get('/', (c) => c.text('Hono is running'));
 
+app.route('/auth', authRouter);
 app.route('/users', usersRouter);
 // handlers are not middlewares in hono
 app.route('/posts', postsRouter);

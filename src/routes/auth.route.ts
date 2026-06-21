@@ -1,4 +1,8 @@
 import { Hono } from 'hono';
 import type {User} from '../types/user';
 
-const route = new Hono();
+const router = new Hono();
+
+router.post('/');
+
+export default router;
