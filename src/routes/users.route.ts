@@ -13,14 +13,16 @@ const users: User[] = [
   { id: 3, name: "Jake", age: 25, gender: "M" },
   { id: 4, name: "Monica", age: 32, gender: "F" },
   { id: 5, name: "Alice", age: 27, gender: "F" },
+  { id: 6, name: "Joseph", age: 23, gender: "M"}
 ];
 
 route.get("/", (c: Context) =>{
   const ageQuery = c.req.query('age');
+  const gender = c.req.query('gender');
 
-  if (ageQuery !== undefined) {
+  if (ageQuery !== undefined || gender !== undefined) {
     const age = Number(ageQuery);
-    const filteredUsers = users.filter(user => user.age === age);
+    const filteredUsers = users.filter(user => user.age === age).filter(user=> user.gender === gender);
     console.log(age)
     return c.json(filteredUsers);
   };
