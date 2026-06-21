@@ -68,7 +68,7 @@ route.get("/", (c: Context) =>{
   return c.json(filteredUsers.slice(skip, skip + limit));
 });
 
-route.get('/u', getUsers);
+route.get('/u', ...getUsers);
 
 route.post(
   "/",
