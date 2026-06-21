@@ -16,9 +16,10 @@ const users: User[] = [
 ];
 
 route.get("/", (c: Context) =>{
-  const age = Number(c.req.query('age'));
+  const ageQuery = c.req.query('age');
 
-  if (age !== undefined) {
+  if (ageQuery !== undefined) {
+    const age = Number(ageQuery);
     const filteredUsers = users.filter(user => user.age === age);
     console.log(age)
     return c.json(filteredUsers);
