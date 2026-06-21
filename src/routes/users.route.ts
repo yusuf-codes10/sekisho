@@ -45,6 +45,8 @@ const users: User[] = [
 route.get("/", (c: Context) =>{
   const ageQuery = c.req.query('age');
   const gender = c.req.query('gender');
+  const pageQuery = c.req.query('page');
+  const limitQuery = c.req.query('limit');
 
   if (ageQuery !== undefined || gender !== undefined) {
     let filteredUsers = users;
@@ -60,7 +62,17 @@ route.get("/", (c: Context) =>{
     return c.json(filteredUsers);
   };
 
-  return c.json(users)
+  // pagination
+  if(pageQuery !== undefined || limitQuery !== undefined) {
+    const page = Number(pageQuery);
+    const limit = Number(limitQuery);
+    const skip = (page - 1) * limit;
+
+    users.splice(skip, limit);
+    return c.json(users);
+  }
+
+  return c.json(users);
 });
 
 route.post(
