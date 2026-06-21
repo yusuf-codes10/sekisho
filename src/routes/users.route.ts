@@ -43,32 +43,7 @@ const users: User[] = [
   { id: 32, name: "Scarlett", age: 29, gender: "female" },
 ];
 
-route.get("/", (c: Context) =>{
-  const ageQuery = c.req.query('age');
-  const gender = c.req.query('gender');
-  const pageQuery = c.req.query('page');
-  const limitQuery = c.req.query('limit');
-  const page = Number(pageQuery) || 1;
-  const limit = Number(limitQuery) || 10;
-  const skip = (page - 1) * limit;
-
-  let filteredUsers = users;
-  if (ageQuery !== undefined || gender !== undefined) {
-    if (ageQuery !== undefined) {
-      const age = Number(ageQuery);
-      filteredUsers = filteredUsers.filter(user => user.age === age);
-    }
-
-    if (gender !== undefined) {
-      filteredUsers = filteredUsers.filter(user => user.gender === gender);
-    }
-  };
-
-  // pagination: ALWAYS PAGINATE
-  return c.json(filteredUsers.slice(skip, skip + limit));
-});
-
-route.get('/u', ...getUsers);
+route.get("/", ...getUsers);
 
 route.post(
   "/",

@@ -1,8 +1,8 @@
-import { Hono } from 'hono';
-import { createFactory } from 'hono/factory';
-import type {User} from '../types/user';
+import { Hono } from "hono";
+import { createFactory } from "hono/factory";
+import type { User } from "../types/user";
 
-const factory = createFactory<{Variables: {user: User}}>();
+const factory = createFactory<{ Variables: { user: User } }>();
 
 const users: User[] = [
   { id: 1, name: "Ella", age: 23, gender: "female" },
@@ -39,4 +39,28 @@ const users: User[] = [
   { id: 32, name: "Scarlett", age: 29, gender: "female" },
 ];
 
-export const getUsers = factory.createHandlers((c) => c.json(users));
+// createHandelers returns an arrays of handlers, thus speard them
+export const getUsers = factory.createHandlers((c) => {
+  const ageQuery = c.req.query("age");
+  const gender = c.req.query("gender");
+  const pageQuery = c.req.query("page");
+  const limitQuery = c.req.query("limit");
+  const page = Number(pageQuery) || 1;
+  const limit = Number(limitQuery) || 10;
+  const skip = (page - 1) * limit;
+
+  let filteredUsers = users;
+  if (ageQuery !== undefined || gender !== undefined) {
+    if (ageQuery !== undefined) {
+      const age = Number(ageQuery);
+      filteredUsers = filteredUsers.filter((user) => user.age === age);
+    }
+
+    if (gender !== undefined) {
+      filteredUsers = filteredUsers.filter((user) => user.gender === gender);
+    }
+  }
+
+  // pagination: ALWAYS PAGINATE
+  return c.json(filteredUsers.slice(skip, skip + limit));
+});
