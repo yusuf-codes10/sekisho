@@ -47,6 +47,9 @@ route.get("/", (c: Context) =>{
   const gender = c.req.query('gender');
   const pageQuery = c.req.query('page');
   const limitQuery = c.req.query('limit');
+  const page = Number(pageQuery) || 1;
+  const limit = Number(limitQuery) || 10;
+  const skip = (page - 1) * limit;
 
   let filteredUsers = users;
   if (ageQuery !== undefined || gender !== undefined) {
@@ -60,16 +63,8 @@ route.get("/", (c: Context) =>{
     }
   };
 
-  // pagination
-  if(pageQuery !== undefined || limitQuery !== undefined) {
-    const page = Number(pageQuery);
-    const limit = Number(limitQuery);
-    const skip = (page - 1) * limit;
-
-    return c.json(filteredUsers.slice(skip, skip + limit));
-  }
-
-  return c.json(filteredUsers);
+  // pagination: ALWAYS PAGINATE
+  return c.json(filteredUsers.slice(skip, skip + limit));
 });
 
 route.post(
