@@ -8,12 +8,12 @@ import { HTTPException } from "hono/http-exception";
 const route = new Hono();
 
 const users: User[] = [
-  { id: 1, name: "Ella", age: 23, gender: "F" },
-  { id: 2, name: "Veronica", age: 23, gender: "F" },
-  { id: 3, name: "Jake", age: 25, gender: "M" },
-  { id: 4, name: "Monica", age: 32, gender: "F" },
-  { id: 5, name: "Alice", age: 27, gender: "F" },
-  { id: 6, name: "Joseph", age: 23, gender: "M"}
+  { id: 1, name: "Ella", age: 23, gender: "female" },
+  { id: 2, name: "Veronica", age: 23, gender: "female" },
+  { id: 3, name: "Jake", age: 25, gender: "male" },
+  { id: 4, name: "Monica", age: 32, gender: "female" },
+  { id: 5, name: "Alice", age: 27, gender: "female" },
+  { id: 6, name: "Joseph", age: 23, gender: "male"}
 ];
 
 route.get("/", (c: Context) =>{
@@ -21,9 +21,16 @@ route.get("/", (c: Context) =>{
   const gender = c.req.query('gender');
 
   if (ageQuery !== undefined || gender !== undefined) {
-    const age = Number(ageQuery);
-    const filteredUsers = users.filter(user => user.age === age).filter(user=> user.gender === gender);
-    console.log(age)
+    let filteredUsers = users;
+    if (ageQuery !== undefined) {
+      const age = Number(ageQuery);
+      filteredUsers = filteredUsers.filter(user => user.age === age);
+    }
+
+    if (gender !== undefined) {
+      filteredUsers = filteredUsers.filter(user => user.gender === gender);
+    }
+
     return c.json(filteredUsers);
   };
 
