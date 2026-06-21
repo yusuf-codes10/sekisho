@@ -4,6 +4,7 @@ import type { User } from "../types/user";
 import { userSchema } from "../types/user";
 import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "hono/http-exception";
+import { getUsers } from "../controllers/users.controller";
 
 const route = new Hono();
 
@@ -66,6 +67,8 @@ route.get("/", (c: Context) =>{
   // pagination: ALWAYS PAGINATE
   return c.json(filteredUsers.slice(skip, skip + limit));
 });
+
+route.get('/u', getUsers);
 
 route.post(
   "/",
