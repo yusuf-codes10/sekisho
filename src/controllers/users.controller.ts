@@ -1,6 +1,8 @@
 import { createFactory } from "hono/factory";
 import type { User } from "../types/user";
 import { HTTPException } from "hono/http-exception";
+import { zValidator } from "@hono/zod-validator";
+import { userSchema } from "../types/user";
 
 const factory = createFactory<{ Variables: { user: User } }>();
 
@@ -76,12 +78,12 @@ export const getUserById = factory.createHandlers((c) => {
   return c.json(foundUser, 200);
 });
 
-export const createUser = factory.createHandlers(async (c) => {
+export const createUser = factory.createHandlers(zValidator("json", userSchema), (c) => {
   const body = c.req.valid('json');
 
   const { name, age, gender } = body;
 
-  if (!name || !age || !gender) return c.json({ msg: "Missing fields" }, 400);
+  // if (!name || !age || !gender) return c.json({ msg: "Missing fields" }, 400);
 
   const newUser: User = {
     id: users.length + 1,

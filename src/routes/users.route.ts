@@ -8,7 +8,6 @@ const route = new Hono();
 route.get("/", ...getUsers);
 
 route.post("/",
-  zValidator("json", userSchema),
   ...createUser
 );
 
