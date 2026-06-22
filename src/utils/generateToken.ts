@@ -1,7 +1,12 @@
 import { sign } from "hono/jwt";
-import type {Users} from '../types/users';
 
-const generateToken = async (user: Pick<Users, "id" | "username" | "email">) => {
+type TokenUser = {
+  id: number;
+  username: string;
+  email: string;
+};
+
+const generateToken = async (user: Pick<TokenUser, "id" | "username" | "email">) => {
   return await sign(
     {
       id: user.id,
