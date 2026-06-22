@@ -43,7 +43,7 @@ export const registerUser = factor.createHandlers(
         throw new HTTPException(400, { message: "email already exists!" });
 
     //   hash the password
-    const hashedPassword = bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // inset a new user
     await db.insert(users).values({
