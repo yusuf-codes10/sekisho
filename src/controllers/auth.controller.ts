@@ -88,8 +88,9 @@ export const logUserIn = factor.createHandlers(
 
       // now generate a jwt token to sign the user in
       const token = await sign({
-        id: users.id,
-        email: users.email,
+        id: isExisting.id,
+        username: isExisting.username,
+        email: isExisting.email,
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
       },   process.env.JWT_SECRET!,  "HS256");
 
