@@ -2,12 +2,15 @@ import { z } from 'zod';
 
 
 export const userSchema = z.object({
-    id: z.number(),
     name: z.string(),
     age: z.number(),
     gender: z.string().optional()
 })
 
-type User = z.infer<typeof userSchema>
+export const fullUserSchema = userSchema.extend({
+    id: z.number()
+})
+
+type User = z.infer<typeof fullUserSchema>
 
 export type {User};
