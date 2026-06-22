@@ -77,7 +77,7 @@ export const getUserById = factory.createHandlers((c) => {
 });
 
 export const createUser = factory.createHandlers(async (c) => {
-  const body = await c.req.json();
+  const body = c.req.valid('json');
 
   const { name, age, gender } = body;
 
