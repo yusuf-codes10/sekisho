@@ -43,31 +43,53 @@ export const registerUser = factor.createHandlers(
       if (duplicateEmail)
         throw new HTTPException(400, { message: "email already exists!" });
 
-    //   hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+      //   hash the password
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-    // inset a new user
-    await db.insert(users).values({
-      username: username,
-      email: email,
-      fullName: fullName,
-      passwordHash: hashedPassword,
-    })
+      // inset a new user
+      await db.insert(users).values({
+        username: username,
+        email: email,
+        fullName: fullName,
+        passwordHash: hashedPassword,
+      });
 
-    return c.json({ message: "user registered" });
+      return c.json({ message: "user registered" });
     } catch (error) {
       console.log(error);
       if (error instanceof HTTPException) throw error;
       throw new HTTPException(500, { message: "Error registering user!" });
     }
-
   },
 );
 
-export const logUserIn = factor.createHandlers(  zValidator("json", usersSchema, (result, c) => {
+export const logUserIn = factor.createHandlers(
+  zValidator("json", usersSchema, (result, c) => {
     if (!result.success) {
       throw new HTTPException(400, {
         message: result.error.issues.map((i) => i.message).join(", "),
       });
     }
-  }),)
+  }),
+  async (c) => {
+    // grab user data
+    const body = c.req.valid('json');
+
+    const { username, password } = body;
+    try {
+      const [isExisting] = await db.select({dbUsername: users.username}).from(users).where(eq(users.username, username));
+
+      if (!isExisting) throw new HTTPException(400, {message: 'username does not exist! Please, Register first!'});
+
+      // check if password hash match
+
+      // now generate a jwt token to sign the user in
+      return c.json('logged in');
+    } catch (error) {
+      console.log(error);
+      if (error instanceof HTTPException) throw error;
+      throw new HTTPException(500, {message: 'Somthing went wrong!'});
+
+    }
+  }
+);
