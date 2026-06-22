@@ -1,7 +1,7 @@
 import { createFactory } from "hono/factory";
 import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "hono/http-exception";
-import { usersSchema, fullUsersSchema } from "../types/users";
+import { usersSchema, fullUsersSchema, loginSchema } from "../types/users";
 import type { Users } from '../types/users';
 import { db } from "../db/index";
 import { users } from "../db/schema";
@@ -13,7 +13,7 @@ import { generateToken } from "../utils/generateToken";
 const factor = createFactory<{ Variables: { user: Users } }>();
 
 export const registerUser = factor.createHandlers(
-  zValidator("json", fullUsersSchema, (result, c) => {
+  zValidator("json", usersSchema, (result, c) => {
     if (!result.success) {
       throw new HTTPException(400, {
         message: result.error.issues.map((i) => i.message).join(", "),
@@ -88,7 +88,7 @@ export const registerUser = factor.createHandlers(
 );
 
 export const logUserIn = factor.createHandlers(
-  zValidator("json", usersSchema, (result, c) => {
+  zValidator("json", loginSchema, (result, c) => {
     if (!result.success) {
       throw new HTTPException(400, {
         message: result.error.issues.map((i) => i.message).join(", "),

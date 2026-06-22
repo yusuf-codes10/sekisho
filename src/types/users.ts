@@ -1,14 +1,17 @@
 import { z } from 'zod';
 
-export const usersSchema = z.object({
+export const loginSchema = z.object({
     username: z.string(),
-    fullName: z.string().nullish(), // both null or undefined
     password: z.string(),
+})
+
+export const usersSchema = loginSchema.extend({
+    email: z.string(),
+    fullName: z.string().nullish(), // both null or undefined
 })
 
 export const fullUsersSchema = usersSchema.extend({
     id: z.number(),
-    email: z.string(),
     createdAt: z.date()
 })
 
