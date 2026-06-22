@@ -78,7 +78,11 @@ export const getUserById = factory.createHandlers((c) => {
   return c.json(foundUser, 200);
 });
 
-export const createUser = factory.createHandlers(zValidator("json", userSchema), (c) => {
+export const createUser = factory.createHandlers(zValidator("json", userSchema, (result, c) => {
+  if (!result.success) {
+    throw new HTTPException(400, { message: result.error.issues.map((i) => i.message).join(", ") });
+  }
+}), (c) => {
   const body = c.req.valid('json');
 
   const { name, age, gender } = body;
