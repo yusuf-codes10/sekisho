@@ -7,6 +7,7 @@ import { db } from "../db/index";
 import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
+import { factory } from "typescript";
 
 const factor = createFactory<{ Variables: { user: User } }>();
 
@@ -62,3 +63,11 @@ export const registerUser = factor.createHandlers(
 
   },
 );
+
+export const logUserIn = factor.createHandlers(  zValidator("json", usersSchema, (result, c) => {
+    if (!result.success) {
+      throw new HTTPException(400, {
+        message: result.error.issues.map((i) => i.message).join(", "),
+      });
+    }
+  }),)
