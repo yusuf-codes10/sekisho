@@ -1,15 +1,15 @@
 import { createFactory } from "hono/factory";
-import { fullUserSchema, type User } from "../types/user";
 import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "hono/http-exception";
 import { usersSchema, fullUsersSchema } from "../types/users";
+import type { Users } from '../types/users';
 import { db } from "../db/index";
 import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { decode, sign, verify } from "hono/jwt";
 
-const factor = createFactory<{ Variables: { user: User } }>();
+const factor = createFactory<{ Variables: { user: Users } }>();
 
 export const registerUser = factor.createHandlers(
   zValidator("json", fullUsersSchema, (result, c) => {
