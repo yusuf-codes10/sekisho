@@ -1,8 +1,8 @@
 import { createFactory } from "hono/factory";
-import type { User } from "../types/user";
+import { fullUserSchema, type User } from "../types/user";
 import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "hono/http-exception";
-import { usersSchema } from "../types/users";
+import { usersSchema, fullUsersSchema } from "../types/users";
 import { db } from "../db/index";
 import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
@@ -12,7 +12,7 @@ import { decode, sign, verify } from 'hono/jwt';
 const factor = createFactory<{ Variables: { user: User } }>();
 
 export const registerUser = factor.createHandlers(
-  zValidator("json", usersSchema, (result, c) => {
+  zValidator("json", fullUsersSchema, (result, c) => {
     if (!result.success) {
       throw new HTTPException(400, {
         message: result.error.issues.map((i) => i.message).join(", "),
@@ -103,3 +103,5 @@ export const logUserIn = factor.createHandlers(
     }
   }
 );
+
+// export const logout = factor.createHandlers();

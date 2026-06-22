@@ -2,13 +2,13 @@ import { z } from 'zod';
 
 export const usersSchema = z.object({
     username: z.string(),
-    email: z.string(),
     fullName: z.string().nullish(), // both null or undefined
     password: z.string(),
 })
 
 export const fullUsersSchema = usersSchema.extend({
     id: z.number(),
+    email: z.string(),
     createdAt: z.date()
 })
 
