@@ -26,7 +26,7 @@ export const registerUser = factor.createHandlers(
 
     // check if email or username already in the db
     try {
-      const duplicateUsername = await db
+      const [duplicateUsername] = await db
         .select()
         .from(users)
         .where(eq(users.username, username));
@@ -34,7 +34,7 @@ export const registerUser = factor.createHandlers(
       if (duplicateUsername)
         throw new HTTPException(400, { message: "username already exits!" });
 
-      const duplicateEmail = await db
+      const [duplicateEmail] = await db
         .select()
         .from(users)
         .where(eq(users.email, email));
@@ -52,11 +52,12 @@ export const registerUser = factor.createHandlers(
       fullName: fullName,
       passwordHash: hashedPassword,
     })
+
+    return c.json({ message: "user registered" });
     } catch (error) {
       console.log(error);
       throw new HTTPException(500, { message: "Error registering user!" });
     }
 
-    return c.json({ message: "hey" });
   },
 );
