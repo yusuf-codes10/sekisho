@@ -112,7 +112,7 @@ export const logUserIn = factor.createHandlers(
         "HS256",
       );
 
-      return c.json("logged in");
+      return c.json({msg: 'user logged in', token});
     } catch (error) {
       console.log(error);
       if (error instanceof HTTPException) throw error;
