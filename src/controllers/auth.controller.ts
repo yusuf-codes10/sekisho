@@ -76,7 +76,7 @@ export const registerUser = factor.createHandlers(
       //   jwtSecret,
       //   "HS256",
       // );
-      const token = generateToken(user);
+      const token = await generateToken(user);
 
       return c.json({ message: "user registered", token });
     } catch (error) {
@@ -136,7 +136,7 @@ export const logUserIn = factor.createHandlers(
       //   "HS256",
       // );
 
-      const token = generateToken(isExisting);
+      const token = await generateToken(isExisting);
 
       return c.json({ msg: "user logged in", token });
     } catch (error) {
