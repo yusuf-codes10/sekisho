@@ -5,4 +5,5 @@ const factor = createFactory<{Variables: {user: User}}>();
 
 export const registerUser = factor.createHandlers((c) => {
     return c.json({msg: 'hey'});
+    // here we handle the user data and register
 })
