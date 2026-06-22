@@ -47,14 +47,36 @@ export const registerUser = factor.createHandlers(
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // inset a new user
-      await db.insert(users).values({
+      const [user] = await db.insert(users).values({
         username: username,
         email: email,
         fullName: fullName,
         passwordHash: hashedPassword,
-      });
+      }).returning();
 
-      return c.json({ message: "user registered" });
+      if(!user) throw new HTTPException(500, {message: 'can\'t register! Please try agian!'});
+
+      // log the user in
+      const jwtSecret = process.env.JWT_SECRET;
+
+      if (!jwtSecret) {
+        throw new HTTPException(500, {
+          message: "JWT secret is not configured",
+        });
+      }
+      // now generate a jwt token to sign the user in
+      const token = await sign(
+        {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+        },
+        jwtSecret,
+        "HS256",
+      );
+
+      return c.json({ message: "user registered", token });
     } catch (error) {
       console.log(error);
       if (error instanceof HTTPException) throw error;
@@ -112,7 +134,7 @@ export const logUserIn = factor.createHandlers(
         "HS256",
       );
 
-      return c.json({msg: 'user logged in', token});
+      return c.json({ msg: "user logged in", token });
     } catch (error) {
       console.log(error);
       if (error instanceof HTTPException) throw error;
