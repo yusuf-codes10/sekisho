@@ -7,7 +7,6 @@ import { db } from "../db/index";
 import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
-import { factory } from "typescript";
 
 const factor = createFactory<{ Variables: { user: User } }>();
 
@@ -84,6 +83,8 @@ export const logUserIn = factor.createHandlers(
       // check if password hash match
 
       const validPwd = await bcrypt.compare(password, isExisting.passwordHash);
+      if (!validPwd) throw new HTTPException(400, {message: 'Wrong Password!'});
+
       // now generate a jwt token to sign the user in
       return c.json('logged in');
     } catch (error) {
