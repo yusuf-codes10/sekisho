@@ -8,6 +8,7 @@ import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { decode, sign, verify } from "hono/jwt";
+import { generateToken } from "../utils/generateToken";
 
 const factor = createFactory<{ Variables: { user: Users } }>();
 
@@ -57,24 +58,25 @@ export const registerUser = factor.createHandlers(
       if(!user) throw new HTTPException(500, {message: 'can\'t register! Please try agian!'});
 
       // log the user in
-      const jwtSecret = process.env.JWT_SECRET;
+      // const jwtSecret = process.env.JWT_SECRET;
 
-      if (!jwtSecret) {
-        throw new HTTPException(500, {
-          message: "JWT secret is not configured",
-        });
-      }
+      // if (!jwtSecret) {
+      //   throw new HTTPException(500, {
+      //     message: "JWT secret is not configured",
+      //   });
+      // }
       // now generate a jwt token to sign the user in
-      const token = await sign(
-        {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-        },
-        jwtSecret,
-        "HS256",
-      );
+      // const token = await sign(
+      //   {
+      //     id: user.id,
+      //     username: user.username,
+      //     email: user.email,
+      //     exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+      //   },
+      //   jwtSecret,
+      //   "HS256",
+      // );
+      const token = generateToken(user);
 
       return c.json({ message: "user registered", token });
     } catch (error) {
@@ -115,24 +117,26 @@ export const logUserIn = factor.createHandlers(
       if (!validPwd)
         throw new HTTPException(400, { message: "Wrong Password!" });
 
-      const jwtSecret = process.env.JWT_SECRET;
+      // const jwtSecret = process.env.JWT_SECRET;
 
-      if (!jwtSecret) {
-        throw new HTTPException(500, {
-          message: "JWT secret is not configured",
-        });
-      }
+      // if (!jwtSecret) {
+      //   throw new HTTPException(500, {
+      //     message: "JWT secret is not configured",
+      //   });
+      // }
       // now generate a jwt token to sign the user in
-      const token = await sign(
-        {
-          id: isExisting.id,
-          username: isExisting.username,
-          email: isExisting.email,
-          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-        },
-        jwtSecret,
-        "HS256",
-      );
+      // const token = await sign(
+      //   {
+      //     id: isExisting.id,
+      //     username: isExisting.username,
+      //     email: isExisting.email,
+      //     exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+      //   },
+      //   jwtSecret,
+      //   "HS256",
+      // );
+
+      const token = generateToken(isExisting);
 
       return c.json({ msg: "user logged in", token });
     } catch (error) {
