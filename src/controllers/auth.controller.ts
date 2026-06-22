@@ -7,6 +7,7 @@ import { db } from "../db/index";
 import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
+import { decode, sign, verify } from 'hono/jwt';
 
 const factor = createFactory<{ Variables: { user: User } }>();
 
@@ -86,6 +87,12 @@ export const logUserIn = factor.createHandlers(
       if (!validPwd) throw new HTTPException(400, {message: 'Wrong Password!'});
 
       // now generate a jwt token to sign the user in
+      const token = await sign({
+        id: users.id,
+        email: users.email,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
+      },   process.env.JWT_SECRET!,  "HS256");
+
       return c.json('logged in');
     } catch (error) {
       console.log(error);
