@@ -4,7 +4,7 @@ export const usersSchema = z.object({
     username: z.string(),
     email: z.string(),
     fullName: z.string().nullish(), // both null or undefined
-    passwordHash: z.string(),
+    password: z.string(),
 })
 
 export const fullUsersSchema = usersSchema.extend({
