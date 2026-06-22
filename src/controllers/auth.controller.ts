@@ -3,6 +3,9 @@ import type { User } from "../types/user";
 import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "hono/http-exception";
 import { usersSchema } from "../types/users";
+import { db } from "../db/index";
+import { users } from "../db/schema";
+import { eq } from 'drizzle-orm';
 
 const factor = createFactory<{ Variables: { user: User } }>();
 
@@ -14,20 +17,23 @@ export const registerUser = factor.createHandlers(
       });
     }
   }),
-  (c) => {
+  async (c) => {
     // grab the user data
-    const body = c.req.valid('json');
+    const body = c.req.valid("json");
 
     const { username, email, fullName, password } = body;
 
     // check if email or username already in the db
     try {
-        
+      const duplicateUser = await db
+        .select()
+        .from(users)
+        .where(eq(users.username, username));
     } catch (error) {
-        console.log(error);
-        throw new HTTPException(500, {message: 'Error registering user!'});
+      console.log(error);
+      throw new HTTPException(500, { message: "Error registering user!" });
     }
 
-    return c.json({message: 'hey'});
-  }
+    return c.json({ message: "hey" });
+  },
 );
