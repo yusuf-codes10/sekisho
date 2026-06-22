@@ -56,6 +56,7 @@ export const registerUser = factor.createHandlers(
     return c.json({ message: "user registered" });
     } catch (error) {
       console.log(error);
+      if (error instanceof HTTPException) throw error;
       throw new HTTPException(500, { message: "Error registering user!" });
     }
 
