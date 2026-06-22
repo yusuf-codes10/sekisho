@@ -8,7 +8,8 @@ export const usersSchema = z.object({
 })
 
 export const fullUsersSchema = usersSchema.extend({
-    id: z.number()
+    id: z.number(),
+    createdAt: z.date()
 })
 
 type Users = z.infer<typeof fullUsersSchema>;
