@@ -6,6 +6,7 @@ import { usersSchema } from "../types/users";
 import { db } from "../db/index";
 import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
+import bcrypt from "bcrypt";
 
 const factor = createFactory<{ Variables: { user: User } }>();
 
@@ -40,6 +41,17 @@ export const registerUser = factor.createHandlers(
 
       if (duplicateEmail)
         throw new HTTPException(400, { message: "email already exists!" });
+
+    //   hash the password
+    const hashedPassword = bcrypt.hash(password, 10);
+
+    // inset a new user
+    await db.insert(users).values({
+      username: username,
+      email: email,
+      fullName: fullName,
+      passwordHash: hashedPassword,
+    })
     } catch (error) {
       console.log(error);
       throw new HTTPException(500, { message: "Error registering user!" });
