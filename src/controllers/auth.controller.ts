@@ -77,12 +77,13 @@ export const logUserIn = factor.createHandlers(
 
     const { username, password } = body;
     try {
-      const [isExisting] = await db.select({dbUsername: users.username}).from(users).where(eq(users.username, username));
+      const [isExisting] = await db.select().from(users).where(eq(users.username, username));
 
       if (!isExisting) throw new HTTPException(400, {message: 'username does not exist! Please, Register first!'});
 
       // check if password hash match
 
+      const validPwd = await bcrypt.compare(password, isExisting.passwordHash);
       // now generate a jwt token to sign the user in
       return c.json('logged in');
     } catch (error) {
