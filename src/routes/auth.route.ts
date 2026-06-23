@@ -1,11 +1,12 @@
 import { Hono } from 'hono';
 import { registerUser, logUserIn } from '../controllers/auth.controller';
+import { authLimiter } from '../middlewares/authLimiter';
 
 const router = new Hono();
 
-router.post('/register', ...registerUser);
+router.post('/register', authLimiter, ...registerUser);
 
-router.post('login', ...logUserIn);
+router.post('login', authLimiter,  ...logUserIn);
 
 router.post('logout');
 
