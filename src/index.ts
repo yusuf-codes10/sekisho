@@ -1,4 +1,5 @@
 import {Hono} from 'hono';
+import { cors } from 'hono/cors';
 import catchAll from './middlewares/catchAll';
 import errorHandler from './utils/errorHandler';
 import customLogger from './middlewares/customLogger';
@@ -9,7 +10,7 @@ import { env } from './utils/env';
 const app = new Hono();
 
 app.use(customLogger);
-
+app.use("*", cors()); // allows everything
 app.use('*', rateLimiter({
   windowMs: 60 * 1000,
   limit: 100,
