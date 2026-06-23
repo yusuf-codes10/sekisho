@@ -1,4 +1,5 @@
 import { sign } from "hono/jwt";
+import { env } from '../utils/env'
 
 type TokenUser = {
   id: number;
@@ -14,7 +15,7 @@ const generateToken = async (user: Pick<TokenUser, "id" | "username" | "email">)
       email: user.email,
       exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
     },
-    process.env.JWT_SECRET!,
+    env.JWT_SECRET,
     "HS256"
   )
 }
