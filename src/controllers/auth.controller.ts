@@ -59,7 +59,9 @@ export const registerUser = factor.createHandlers(
       // log the user in (generate token)
       const token = await generateToken(user);
 
-      return c.json({ message: "user registered", token });
+      const { passwordHash: _, ...safeUser} = user;
+
+      return c.json({ safeUser, token });
     } catch (error) {
       console.log(error);
       if (error instanceof HTTPException) throw error;
@@ -101,7 +103,9 @@ export const logUserIn = factor.createHandlers(
       // generate token
       const token = await generateToken(isExisting);
 
-      return c.json({ msg: "user logged in", token });
+      const { passwordHash: _, ...safeUser} = isExisting;
+
+      return c.json({ safeUser, token });
     } catch (error) {
       console.log(error);
       if (error instanceof HTTPException) throw error;
