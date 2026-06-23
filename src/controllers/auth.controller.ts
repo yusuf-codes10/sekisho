@@ -2,7 +2,7 @@ import { createFactory } from "hono/factory";
 import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "hono/http-exception";
 import { usersSchema, loginSchema } from "../types/users";
-import type { Users } from '../types/users';
+import type { Users } from "../types/users";
 import { db } from "../db/index";
 import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
@@ -47,23 +47,35 @@ export const registerUser = factor.createHandlers(
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // inset a new user
-      const [user] = await db.insert(users).values({
-        username: username,
-        email: email,
-        fullName: fullName,
-        passwordHash: hashedPassword,
-      }).returning();
+      const [user] = await db
+        .insert(users)
+        .values({
+          username: username,
+          email: email,
+          fullName: fullName,
+          passwordHash: hashedPassword,
+        })
+        .returning();
 
-      if(!user) throw new HTTPException(500, {message: 'can\'t register! Please try agian!'});
+      if (!user)
+        throw new HTTPException(500, {
+          message: "can't register! Please try agian!",
+        });
 
       // log the user in (generate token)
       const token = await generateToken(user);
 
-      const { passwordHash: _, ...safeUser} = user;
+      const { passwordHash: _, ...safeUser } = user;
 
       return c.json({ safeUser, token });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      if (error?.code === "23505") {
+        // postgres unique violation code
+        throw new HTTPException(409, {
+          message: "Username or email already exists!",
+        });
+      }
       if (error instanceof HTTPException) throw error;
       throw new HTTPException(500, { message: "Error registering user!" });
     }
@@ -103,7 +115,7 @@ export const logUserIn = factor.createHandlers(
       // generate token
       const token = await generateToken(isExisting);
 
-      const { passwordHash: _, ...safeUser} = isExisting;
+      const { passwordHash: _, ...safeUser } = isExisting;
 
       return c.json({ safeUser, token });
     } catch (error) {
