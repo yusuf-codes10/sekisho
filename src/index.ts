@@ -4,6 +4,7 @@ import errorHandler from './utils/errorHandler';
 import customLogger from './middlewares/customLogger';
 import authRouter from './routes/auth.route';
 import { rateLimiter } from 'hono-rate-limiter';
+import { env } from './utils/env';
 
 const app = new Hono();
 
@@ -22,6 +23,6 @@ app.notFound(catchAll);
 app.onError(errorHandler);
 
 export default {
-  port: 5200,
+  port: env.PORT,
   fetch: app.fetch,
 };
