@@ -1,11 +1,11 @@
 # Sekisho
-📖 Overview
+## 📖 Overview
 Sekisho is a stateless authentication REST API built with Hono and Bun. It handles user registration, login, and JWT token generation — designed to be consumed by any frontend or external service that needs auth out of the box.
 
-🚀 Live Demo
+## 🚀 Live Demo
 Coming soon
 
-✨ Features
+## ✨ Features
 
 * JWT-based authentication with secure token generation
 * Password hashing using Bun's native `Bun.password` (Argon2id)
@@ -19,10 +19,10 @@ Coming soon
 🛠 Tech Stack
 Runtime Bun · Framework Hono · Database PostgreSQL · ORM Drizzle ORM · Validation Zod · Auth JWT
 
-💡 Why I built this
+## 💡 Why I built this
 Most projects repeat the same auth setup from scratch. Sekisho is a standalone auth service you can plug into any project — it handles registration, login, and token issuance so you don't have to.
 
-⚙️ Installation
+## ⚙️ Installation
 
 ```bash
 git clone https://github.com/yusef-codes10/sekisho
@@ -53,7 +53,7 @@ Start the development server:
 bun dev
 ```
 
-📡 API Endpoints
+## 📡 API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -65,5 +65,5 @@ bun dev
 2. Login via `POST /auth/login` to receive a JWT token
 3. Pass the token in the `Authorization: Bearer <token>` header to protected routes in your own services
 
-👨‍💻 Author
+## 👨‍💻 Author
 Yusuf — [github.com/yusef-codes10](https://github.com/yusef-codes10)
