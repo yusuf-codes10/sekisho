@@ -6,9 +6,9 @@ const router = new Hono();
 
 router.post('/register', authLimiter, ...registerUser);
 
-router.post('login', authLimiter,  ...logUserIn);
+router.post('/login', authLimiter,  ...logUserIn);
 
-router.post('logout');
+router.post('/logout');
 
 router.post('/refresh');
 
