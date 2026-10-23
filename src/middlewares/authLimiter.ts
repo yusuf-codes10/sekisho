@@ -4,10 +4,15 @@ import { getConnInfo } from "hono/bun"; //reads from Bun's native server socket 
 const authLimiter = rateLimiter({
   windowMs: 60 * 1000, // 1 minute
   limit: 50, // only 5 attempts per minute
-  keyGenerator: (c) =>{
-    const info = getConnInfo(c);
-    return info.remote.address ?? "unknown"; // ✅ real IP, can't be spoofed
-  }
+  keyGenerator: (c) => {
+    const forwarded = c.req.header("x-forwarded-for")?.split(",")[0]?.trim();
+    const ip =
+      c.req.header("cf-connecting-ip") ??
+      forwarded ??
+      getConnInfo(c).remote.address ??
+      "unknown";
+    return ip;
+  },
 });
 
-export {authLimiter};
+export { authLimiter };
